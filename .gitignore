@@ -1,0 +1,15 @@
+# misc
+.DS_Store
+
+# __pycache__
+__pycache__
+
+# Virtual env metadata
+.venv
+
+# database
+*.db
+instance
+
+# Pipfile.lock
+Pipfile.lock
