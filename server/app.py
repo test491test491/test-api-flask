@@ -8,7 +8,7 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 
-from models import db
+from models import db, Fruit
 
 app = Flask(__name__)
 app.secret_key = os.urandom(16)
@@ -60,7 +60,99 @@ class Test(Resource):
         }
         return make_response(response_body, 200)
     
+class AllFruits(Resource):
+    def get(self):
+        fruits = Fruit.query.all()
+        response_body = [fruit.to_dict() for fruit in fruits]
+        return make_response(response_body, 200)
+    
+    def post(self):
+        fruit_name = request.json.get('name')
+
+        try:
+            new_fruit = Fruit(name=fruit_name)
+            db.session.add(new_fruit)
+            db.session.commit()
+            response_body = new_fruit.to_dict()
+            return make_response(response_body, 201)
+        except TypeError as te:
+            response_body = {
+                "error": str(te)
+            }
+            return make_response(response_body, 422)
+        except ValueError as ve:
+            response_body = {
+                "error": str(ve)
+            }
+            return make_response(response_body, 422)
+        except:
+            response_body = {
+                "error": "Fruit name cannot be null!"
+            }
+            return make_response(response_body, 422)
+
+class FruitByID(Resource):
+    def get(self, id):
+        fruit = db.session.get(Fruit, id)
+
+        if fruit:
+            response_body = fruit.to_dict()
+            return make_response(response_body, 200)
+        else:
+            response_body = {
+                "error": "Fruit Not Found!"
+            }
+            return make_response(response_body, 404)
+        
+    def patch(self, id):
+        fruit = db.session.get(Fruit, id)
+
+        if fruit:
+            try:
+                for attr in request.json:
+                    setattr(fruit, attr, request.json[attr])
+                
+                db.session.commit()
+                response_body = fruit.to_dict()
+                return make_response(response_body, 200)
+            except TypeError as te:
+                response_body = {
+                    "error": str(te)
+                }
+                return make_response(response_body, 422)
+            except ValueError as ve:
+                response_body = {
+                    "error": str(ve)
+                }
+                return make_response(response_body, 422)
+            except:
+                response_body = {
+                    "error": "Fruit must have a name!"
+                }
+                return make_response(response_body, 422)
+
+        else:
+            response_body = {
+                "error": "Fruit Not Found!"
+            }
+            return make_response(response_body, 404)
+        
+    def delete(self, id):
+        fruit = db.session.get(Fruit, id)
+
+        if fruit:
+            db.session.delete(fruit)
+            db.session.commit()
+            return make_response({}, 204)
+        else:
+            response_body = {
+                "error": "Fruit Not Found!"
+            }
+            return make_response(response_body, 404)
+
 api.add_resource(Test, "/tests")
+api.add_resource(AllFruits, '/fruits')
+api.add_resource(FruitByID, "/fruits/<int:id>")
 
 if __name__ == "__main__":
     app.run(port=7777, debug=True)
