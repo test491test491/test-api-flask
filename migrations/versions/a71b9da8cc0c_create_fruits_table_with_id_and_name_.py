@@ -1,8 +1,8 @@
-"""empty message
+"""Create fruits table with id and name columns
 
-Revision ID: ff5844df137b
+Revision ID: a71b9da8cc0c
 Revises: 
-Create Date: 2025-04-29 12:04:30.117019
+Create Date: 2025-04-29 13:54:33.593680
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ff5844df137b'
+revision = 'a71b9da8cc0c'
 down_revision = None
 branch_labels = None
 depends_on = None

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import ipdb
+
+# import ipdb
 import os
 
 from flask import Flask, make_response, request, session
@@ -11,10 +12,14 @@ from flask_bcrypt import Bcrypt
 from models import db, Fruit
 
 app = Flask(__name__)
-app.secret_key = os.urandom(16)
+# app.secret_key = os.urandom(16)
 
 # configure a database connection to the local file tests.db
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tests.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tests.db'
+
+# Make sure to enter the following command in the terminal - necessary for os.environ.get('DATABASE_URI') to work!
+# export DATABASE_URI=postgresql://test491:Lsd7HM36xEVxQXExntgrnv8qPgMq1Sss@dpg-d08gmn2li9vc739q6dmg-a.virginia-postgres.render.com/tests_db
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 
 # disable modification tracking to use less memory
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
