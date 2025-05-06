@@ -26,3 +26,9 @@ class Fruit(db.Model, SerializerMixin):
             raise ValueError(f"{column_name} must be at least 5 characters long!")
         else:
             return value
+        
+class VacationDestination(db.Model, SerializerMixin):
+    __tablename__ = "vacation_destinations"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)

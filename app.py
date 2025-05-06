@@ -9,7 +9,7 @@ from flask_restful import Api, Resource
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 
-from models import db, Fruit
+from models import db, Fruit, VacationDestination
 
 app = Flask(__name__)
 # app.secret_key = os.urandom(16)
@@ -154,10 +154,17 @@ class FruitByID(Resource):
                 "error": "Fruit Not Found!"
             }
             return make_response(response_body, 404)
+        
+class AllVacationDestinations(Resource):
+    def get(self):
+        vacation_destinations = VacationDestination.query.all()
+        response_body = [vacation_destination.to_dict() for vacation_destination in vacation_destinations]
+        return make_response(response_body, 200)
 
 api.add_resource(Test, "/tests")
 api.add_resource(AllFruits, '/fruits')
 api.add_resource(FruitByID, "/fruits/<int:id>")
+api.add_resource(AllVacationDestinations, "/vacation_destinations")
 
 if __name__ == "__main__":
     app.run(port=7777, debug=True)
